@@ -32,13 +32,13 @@ class GhostTextConnection extends EventEmitter {
 
     }
 
-    send(text: string) {
+    send(text: string, selections: {start: number, end: number}[]) {
         if (this.socket) {
             this.socket.send(JSON.stringify({
                 title: '',
                 text:  text,
                 syntax: '',
-                selections: []
+                selections: selections
             }));
         }
     }

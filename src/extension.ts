@@ -92,11 +92,16 @@ export const activate = (context: vscode.ExtensionContext) => {
                 );
 
                 disposables.push(
-                    vscode.workspace.onDidChangeTextDocument(event => {
+                    vscode.workspace.onDidChangeTextDocument(async event => {
                         if(event.document === document) {
-                            const localText = document.getText();
                             if (enterLocalEdit === 0) {
-                                conn.send(localText);
+                                const text = event.document.getText();
+                                const editor = await vscode.window.showTextDocument(event.document);
+                                const selections = editor.selections.map(selection => ({
+                                    start: event.document.offsetAt(selection.start),
+                                    end: event.document.offsetAt(selection.end),
+                                }));
+                                conn.send(text, selections);
                             }
                         }
                     })
