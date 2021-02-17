@@ -49,13 +49,10 @@ export const activate = (context: vscode.ExtensionContext) => {
 
         const disposables: vscode.Disposable[] = [];
         let document: vscode.TextDocument | null = null;
-        let remoteText = "";
         let enterLocalEdit = 0;
 
         conn.on('data', async (data) => {
             console.log('receive data');
-
-            remoteText = data.text;
 
             if (!document) {
                 document = await vscode.workspace.openTextDocument({
@@ -98,7 +95,7 @@ export const activate = (context: vscode.ExtensionContext) => {
                     vscode.workspace.onDidChangeTextDocument(event => {
                         if(event.document === document) {
                             const localText = document.getText();
-                            if (enterLocalEdit === 0 && localText !== remoteText) {
+                            if (enterLocalEdit === 0) {
                                 conn.send(localText);
                             }
                         }
