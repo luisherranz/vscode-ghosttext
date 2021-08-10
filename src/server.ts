@@ -1,99 +1,101 @@
-import * as http from 'http';
-import WebSocket from 'ws';
-import { EventEmitter } from 'events'
+import * as http from "http";
+import WebSocket from "ws";
+import { EventEmitter } from "events";
 
 let httpServer: http.Server | null = null;
 
 class GhostTextConnection extends EventEmitter {
+  private socket: WebSocket | null;
 
-    private socket: WebSocket | null;
+  constructor(socket: WebSocket) {
+    super();
 
-    constructor(socket: WebSocket){
-        super();
+    socket.on("message", (data) => {
+      this.emit("data", JSON.parse(data.toString()));
+    });
 
-        socket.on('message', (data) => {
-            this.emit('data', JSON.parse(data.toString()));
-        });
+    socket.on("close", () => {
+      this.close();
+      this.emit("close");
+    });
 
-        socket.on('close', () => {
-            this.close();
-            this.emit('close');
-        });
+    this.socket = socket;
+  }
 
-        this.socket = socket;
+  close() {
+    if (this.socket) {
+      const c = this.socket;
+      this.socket = null;
+      c.close();
     }
+  }
 
-    close() {
-        if (this.socket) {
-            const c = this.socket;
-            this.socket = null;
-            c.close();
-        }
-
+  send(text: string, selections: { start: number; end: number }[]) {
+    if (this.socket) {
+      this.socket.send(
+        JSON.stringify({
+          title: "",
+          text: text,
+          syntax: "",
+          selections: selections,
+        })
+      );
     }
-
-    send(text: string, selections: {start: number, end: number}[]) {
-        if (this.socket) {
-            this.socket.send(JSON.stringify({
-                title: '',
-                text:  text,
-                syntax: '',
-                selections: selections
-            }));
-        }
-    }
+  }
 }
 
 interface GhostTextData {
-    text: string,
-    selections: {start: number, end: number}[]
-    title: string,
-    url: string,
-    syntax: string,
+  text: string;
+  selections: { start: number; end: number }[];
+  title: string;
+  url: string;
+  syntax: string;
 }
 
 interface GhostTextConnection {
-    on(event: 'data', cb: (data: GhostTextData) => void): this,
-    on(event: 'close', cb: () => void): this,
+  on(event: "data", cb: (data: GhostTextData) => void): this;
+  on(event: "close", cb: () => void): this;
 }
 
 export const close = () => {
-    if (httpServer) {
-        httpServer.close();
-        httpServer = null;
-    }
-}
+  if (httpServer) {
+    httpServer.close();
+    httpServer = null;
+  }
+};
 
 export const listen = (handler: (conn: GhostTextConnection) => void) => {
-    httpServer = http.createServer((req, res) => {
-        const wsServer = new WebSocket.Server({ port: 0 });
-        wsServer.on('connection', (socket: WebSocket) => {
-            const conn = new GhostTextConnection(socket);
-            handler(conn);
-        });
-
-        wsServer.on('listening', () => {
-            const addr = wsServer.address();
-            if (typeof addr === 'string') {
-                res.writeHead(500, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({ error: "uanble listen port" }));
-                return;
-            }
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({
-                ProtocolVersion: 1,
-                WebSocketPort: addr.port
-            }));
-        });
+  httpServer = http.createServer((req, res) => {
+    const wsServer = new WebSocket.Server({ port: 0 });
+    wsServer.on("connection", (socket: WebSocket) => {
+      const conn = new GhostTextConnection(socket);
+      handler(conn);
     });
 
-    httpServer.on('error', (err: any) => {
-        if ((err.code === 'EADDRINUSE') && (err.syscall === 'listen')) {
-            console.log(err.message);
-        } else {
-            throw err;
-        }
+    wsServer.on("listening", () => {
+      const addr = wsServer.address();
+      if (typeof addr === "string") {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "uanble listen port" }));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          ProtocolVersion: 1,
+          WebSocketPort: addr.port,
+        })
+      );
     });
+  });
 
-    httpServer.listen(4001);
-}
+  httpServer.on("error", (err: any) => {
+    if (err.code === "EADDRINUSE" && err.syscall === "listen") {
+      console.log(err.message);
+    } else {
+      throw err;
+    }
+  });
+
+  httpServer.listen(4001);
+};
