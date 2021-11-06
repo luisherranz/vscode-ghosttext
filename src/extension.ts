@@ -75,13 +75,13 @@ export const activate = (context: vscode.ExtensionContext) => {
           content: data.text,
         });
 
-        const progress = await showProgress(
-          data.title + "\n" + data.url,
-          () => {
-            console.log("progress canceled");
-            cleanup();
-          }
-        );
+        // const progress = await showProgress(
+        //   data.title + "\n" + data.url,
+        //   () => {
+        //     console.log("progress canceled");
+        //     cleanup();
+        //   }
+        // );
 
         const cleanup = () => {
           disposables.forEach((d) => d.dispose());
