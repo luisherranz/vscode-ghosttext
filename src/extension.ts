@@ -28,27 +28,6 @@ async function updateDocument(
   }
 }
 
-function showProgress(
-  title: string,
-  onCancellationRequested: () => void
-): Promise<{ done: () => void }> {
-  return new Promise((r) => {
-    const options = {
-      location: vscode.ProgressLocation.Notification,
-      title: title,
-      cancellable: true,
-    };
-    vscode.window.withProgress(
-      options,
-      async (_, token) =>
-        new Promise((done) => {
-          token.onCancellationRequested(onCancellationRequested);
-          r({ done: done as () => {} });
-        })
-    );
-  });
-}
-
 async function closeDocument(document: vscode.TextDocument) {
   if (!document.isClosed) {
     await updateDocument(document, "", []);
@@ -75,21 +54,12 @@ export const activate = (context: vscode.ExtensionContext) => {
           content: data.text,
         });
 
-        const progress = await showProgress(
-          data.title + "\n" + data.url,
-          () => {
-            console.log("progress canceled");
-            cleanup();
-          }
-        );
-
         const cleanup = () => {
           disposables.forEach((d) => d.dispose());
           conn.close();
           if (document) {
             closeDocument(document);
           }
-          progress.done();
         };
 
         conn.on("close", () => {
