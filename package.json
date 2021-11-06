@@ -1,38 +1,38 @@
 {
-    "name": "ghosttext",
-    "version": "0.0.2",
-    "license": "MIT",
-    "publisher": "ngyuki",
-    "displayName": "GhostText",
-    "description": "Use your text editor to write in your browser. Everything you type in the editor will be instantly updated in the browser (and vice versa).",
-    "icon": "images/gticon.png",
-    "repository": "https://github.com/ngyuki/ghosttext-vscode",
-    "categories": [
-        "Other"
-    ],
-    "keywords": [
-        "ghosttext"
-    ],
-    "engines": {
-        "vscode": "^1.44.0"
-    },
-    "main": "./dist/extension.js",
-    "contributes": {},
-    "activationEvents": [
-        "*"
-    ],
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./"
-    },
-    "dependencies": {
-        "ws": "^7.4.2"
-    },
-    "devDependencies": {
-        "@types/node": "^6.14.10",
-        "@types/vscode": "^1.44.0",
-        "@types/ws": "^7.4.0",
-        "typescript": "^4.3.5"
-    }
+  "name": "ghosttext",
+  "version": "0.0.2",
+  "license": "MIT",
+  "publisher": "ngyuki",
+  "displayName": "GhostText",
+  "description": "Use your text editor to write in your browser. Everything you type in the editor will be instantly updated in the browser (and vice versa).",
+  "icon": "images/gticon.png",
+  "repository": "https://github.com/ngyuki/ghosttext-vscode",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "ghosttext"
+  ],
+  "engines": {
+    "vscode": "^1.44.0"
+  },
+  "main": "./dist/extension.js",
+  "contributes": {},
+  "activationEvents": [
+    "*"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "ws": "^7.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.6",
+    "@types/vscode": "^1.44.0",
+    "@types/ws": "^7.4.0",
+    "typescript": "^4.3.5"
+  }
 }
