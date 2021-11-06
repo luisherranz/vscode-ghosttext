@@ -1,12 +1,12 @@
 {
   "name": "ghosttext",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
-  "publisher": "ngyuki",
+  "publisher": "luisherranz",
   "displayName": "GhostText",
   "description": "Use your text editor to write in your browser. Everything you type in the editor will be instantly updated in the browser (and vice versa).",
   "icon": "images/gticon.png",
-  "repository": "https://github.com/ngyuki/ghosttext-vscode",
+  "repository": "https://github.com/luisherranz/ghosttext-vscode",
   "categories": [
     "Other"
   ],
