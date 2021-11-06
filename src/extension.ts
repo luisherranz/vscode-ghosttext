@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
+import { addConnection, removeConnection } from "./file";
 import * as server from "./server";
-import * as transformations from "./transformations";
 
 async function updateDocument(
   document: vscode.TextDocument,
@@ -60,7 +60,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   console.log("extension activate");
 
   server.listen((conn) => {
-    console.log("connected");
+    addConnection();
 
     const disposables: vscode.Disposable[] = [];
     let document: vscode.TextDocument | null = null;
@@ -93,7 +93,7 @@ export const activate = (context: vscode.ExtensionContext) => {
         };
 
         conn.on("close", () => {
-          console.log("connection close");
+          removeConnection();
           cleanup();
         });
 
