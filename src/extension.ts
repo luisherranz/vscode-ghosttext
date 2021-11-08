@@ -38,7 +38,7 @@ async function closeDocument(document: vscode.TextDocument) {
 export const activate = (context: vscode.ExtensionContext) => {
   console.log("extension activate");
 
-  server.listen((conn) => {
+  server.listen(async (conn) => {
     addConnection();
 
     const disposables: vscode.Disposable[] = [];
@@ -62,8 +62,8 @@ export const activate = (context: vscode.ExtensionContext) => {
           }
         };
 
-        conn.on("close", () => {
-          removeConnection();
+        conn.on("close", async () => {
+          await removeConnection();
           cleanup();
         });
 
