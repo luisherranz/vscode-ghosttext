@@ -11,12 +11,12 @@ const save = async () => {
 
 save();
 
-export const addConnection = () => {
+export const addConnection = async () => {
   connections += 1;
-  save();
+  await save();
 };
 
-export const removeConnection = () => {
+export const removeConnection = async () => {
   connections -= 1;
-  save();
+  await save();
 };
